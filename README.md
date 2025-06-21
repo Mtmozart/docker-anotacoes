@@ -91,15 +91,50 @@ Para persistir dados em containers, o Docker oferece diferentes opções, sendo 
 * Limpar volumes não usados:
   `docker volume prune`
 
-#### **Bind Mounts**
+---
 
-Usado para montar uma pasta do host no container:
-`docker run -it -v /caminho/local:/app ubuntu bash`
+## 📂 Utilidade dos Bind Mounts (com exemplos)
 
-#### **tmpfs**
+Os **Bind Mounts** permitem montar uma pasta ou arquivo do sistema host dentro do container Docker, garantindo que o conteúdo seja compartilhado entre os dois ambientes.
 
-Usado para armazenar dados temporários apenas na memória RAM do host (voláteis):
-`docker run -it --tmpfs /app:rw,size=64m ubuntu bash`
+### Exemplo:
+
+```bash
+docker run -it -v /caminho/local:/app ubuntu bash
+```
+
+Aqui, a pasta `/caminho/local` do host é montada dentro do container em `/app`. Isso significa que qualquer arquivo criado, editado ou deletado dentro de `/app` no container refletirá imediatamente em `/caminho/local` no host, e vice-versa.
+
+### Para que serve:
+
+* **Desenvolvimento:** Você pode editar seu código localmente no host e testar no container sem precisar criar uma nova imagem a cada alteração.
+* **Persistência:** Facilita o acesso a arquivos e dados importantes que precisam ser mantidos fora do ciclo de vida do container.
+* **Compartilhamento:** Permite compartilhar configurações, scripts ou dados entre múltiplos containers e o host.
+
+---
+
+## 🧠 tmpfs (dados temporários em memória RAM)
+
+Exemplo:
+
+```bash
+docker run -it --tmpfs /app:rw,size=64m ubuntu bash
+```
+
+Nesse caso, a pasta `/app` dentro do container é montada na memória RAM do host, funcionando como um sistema de arquivos temporário. Os dados armazenados ali são **voláteis**, ou seja, serão perdidos quando o container parar.
+
+### Para que serve:
+
+* **Armazenar dados temporários que não precisam ser persistidos.**
+* **Melhorar desempenho**, já que operações de leitura/escrita em RAM são muito mais rápidas que no disco.
+* **Garantir segurança em dados sensíveis que não devem ficar gravados em disco.**
+
+---
+
+Assim, **bind mounts** são usados para compartilhar dados persistentes entre host e container, enquanto **tmpfs** é ideal para dados temporários que só precisam existir durante a execução do container.
+
+---
+
 
 ---
 
